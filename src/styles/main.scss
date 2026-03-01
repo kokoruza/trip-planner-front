@@ -1,0 +1,167 @@
+/* Global styles for Trip Planner frontend */
+
+:root {
+  --bg: #f7fafc;
+  --muted: #6b7280;
+  --accent: #2563eb;
+  --card: #ffffff;
+  --surface: #eef2f7;
+  --radius: 8px;
+}
+
+body {
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: var(--bg);
+  color: #111827;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  padding: 20px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--accent);
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.board-layout {
+  display: flex;
+  gap: 24px;
+}
+
+.sidebar {
+  width: 260px;
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(16,24,40,0.05);
+}
+
+.sidebar h3 {
+  margin: 6px 0 10px 0;
+}
+
+.trip-list-sidebar,
+.boards-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px 0;
+}
+
+.trip-list-sidebar li,
+.boards-list li {
+  padding: 8px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.trip-list-sidebar li.active,
+.boards-list li.active {
+  background: var(--surface);
+  font-weight: 600;
+}
+
+.mt { margin-top: 20px; }
+
+.create-board-form {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.create-board-form input {
+  flex: 1;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #e6edf3;
+}
+
+.create-board-form button {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: none;
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
+}
+
+.board-main {
+  flex: 1;
+}
+
+.board-canvas {
+  width: 100%;
+  height: 600px;
+  background: linear-gradient(180deg, #fbfdff, #f3f7fb);
+  position: relative;
+  border-radius: 8px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+  padding: 12px;
+}
+
+.sticker {
+  width: 150px;
+  height: 150px;
+  background: #fff9c4;
+  padding: 10px;
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(2,6,23,0.08);
+  overflow: hidden;
+}
+
+.add-trip {
+  margin-bottom: 20px;
+}
+
+.add-trip-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.add-trip input {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #e6edf3;
+}
+
+.add-trip button {
+  padding: 8px 12px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.trip-list {
+  background: var(--card);
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.trip-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.trip-item:last-child { border-bottom: none; }
+
+.trip-dest { color: var(--muted); margin-left: 12px; }
+
+.muted { color: var(--muted); }
