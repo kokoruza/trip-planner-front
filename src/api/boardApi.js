@@ -13,13 +13,44 @@ export const getBoards = async (tripId) => {
     return res.data.map(b => ({ ...b, title: b.name }))
 }
 
-export const createBoard = async (title, tripId) => {
-    const payload = { name: title }
-    if (tripId) payload.tripId = tripId
+export const getBoard = async (boardId) => {
+    const res = await api.get(`/boards/${boardId}`)
+    return res.data
+}
 
+export const createBoard = async (payload) => {
+    // payload should contain: { name, description, tripId }
     const res = await api.post("/boards", payload)
 
     return { ...res.data, title: res.data.name }
+}
+
+// Cards (Stickers)
+export const getCardsByBoard = async (boardId) => {
+    const res = await api.get(`/boards/${boardId}/cards`)
+    return res.data
+}
+
+export const createCard = async (boardId, payload) => {
+    // payload should contain: { text, color, positionX, positionY }
+    const data = {
+        ...payload,
+        boardId
+    }
+
+    const res = await api.post(`/cards`, data)
+    return res.data
+}
+
+export const updateCard = async (cardId, payload) => {
+    // payload can contain: { text, color, positionX, positionY }
+    const res = await api.put(`/cards/${cardId}`, payload)
+    return res.data
+}
+
+export const deleteCard = async (cardId) => {
+    const res = await api.delete(`/cards/${cardId}`)
+    return res.data
 }
 
 export const createSticker = async (boardId, text, x, y) => {

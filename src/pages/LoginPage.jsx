@@ -1,6 +1,6 @@
 import { useState, useContext } from "react"
 import { AuthContext } from "../auth/AuthContext"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 
 export default function LoginPage() {
 
@@ -8,39 +8,67 @@ export default function LoginPage() {
 
     const navigate = useNavigate()
 
-    const [email, setEmail] = useState("")
+    const [login, setLogin] = useState("")
     const [password, setPassword] = useState("")
+    const [error, setError] = useState("")
+    const [loading, setLoading] = useState(false)
 
     const handleSubmit = async e => {
 
         e.preventDefault()
+        setError("")
+        setLoading(true)
 
-        await signIn(email, password)
-
-        navigate("/boards")
+        try {
+            await signIn(login, password)
+            navigate("/trips")
+        } catch (err) {
+            setError(err?.response?.data?.message || "Ошибка входа. Проверьте логин/почту и пароль.")
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (
 
-        <form onSubmit={handleSubmit}>
+        <div className="auth-page">
+            <div className="auth-card">
+                <h2>Вход</h2>
 
-            <h2>Login</h2>
+                {error && <div style={{ color: "#ef4444", padding: "12px", background: "#fee2e2", borderRadius: "8px", fontSize: "14px" }}>
+                    {error}
+                </div>}
 
-            <input
-                placeholder="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-            />
+                <form onSubmit={handleSubmit}>
 
-            <input
-                type="password"
-                placeholder="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-            />
+                    <input
+                        type="text"
+                        placeholder="Логин или почта"
+                        value={login}
+                        onChange={e => setLogin(e.target.value)}
+                        required
+                        disabled={loading}
+                    />
 
-            <button>Login</button>
+                    <input
+                        type="password"
+                        placeholder="Пароль"
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
+                        required
+                        disabled={loading}
+                    />
 
-        </form>
+                    <button type="submit" className="btn-primary" disabled={loading}>
+                        {loading ? "Загрузка..." : "Войти"}
+                    </button>
+
+                </form>
+
+                <div className="auth-link">
+                    Нет аккаунта? <Link to="/register">Зарегистрироваться</Link>
+                </div>
+            </div>
+        </div>
     )
 }

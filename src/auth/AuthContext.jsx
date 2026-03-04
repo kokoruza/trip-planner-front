@@ -8,25 +8,27 @@ export const AuthProvider = ({ children }) => {
 
     const [user, setUser] = useState(null)
 
-    const signIn = async (email, password) => {
+    const signIn = async (accountName, password) => {
 
-        const data = await login(email, password)
+        const data = await login(accountName, password)
 
         localStorage.setItem("accessToken", data.accessToken)
         localStorage.setItem("refreshToken", data.refreshToken)
 
-        // fetch account details
+        // Optionally fetch account details (можно убрать, если не используется)
         try {
             const account = await getAccount(data.accountId)
             setUser(account)
         } catch (e) {
+            // Account fetch failed, but login succeeded - that's ok
+            console.warn("Could not fetch account details", e)
             setUser({ accountId: data.accountId })
         }
     }
 
-    const signUp = async (email, password) => {
+    const signUp = async (accountName, email, password) => {
 
-        const data = await register(email, password)
+        const data = await register(accountName, email, password)
 
         localStorage.setItem("accessToken", data.accessToken)
         localStorage.setItem("refreshToken", data.refreshToken)
@@ -35,6 +37,8 @@ export const AuthProvider = ({ children }) => {
             const account = await getAccount(data.accountId)
             setUser(account)
         } catch (e) {
+            // Account fetch failed, but signup succeeded - that's ok
+            console.warn("Could not fetch account details", e)
             setUser({ accountId: data.accountId })
         }
     }

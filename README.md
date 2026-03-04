@@ -1,23 +1,190 @@
-# React + Vite
+# 🏖️ Trip Planner - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Современное веб-приложение для планирования отпусков с красивым сине-белым интерфейсом. 
 
-Currently, two official plugins are available:
+**Статус:** ✅ Функциональный прототип с полной UI/UX системой
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 🎨 Особенности
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+✨ **Красивый дизайн** - Сине-белая цветовая гамма с плавными анимациями
+📱 **Адаптивный** - Работает на всех устройствах (desktop, tablet, mobile)
+🔐 **Безопасный** - JWT аутентификация с refresh токенами
+📊 **Полнофункциональный** - Управление отпусками, досками и проектами
+🎯 **Интуитивный** - Удобная навигация и логичная структура
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 📋 Требования
 
-## Running the full project (backend + frontend)
+- Node.js 14+
+- npm или yarn
+- Бэкенд API на адресе `https://localhost:7085`
 
-Backend (ASP.NET 10) lives in the workspace at `TripPlannerVibeCode/TripPlanner`.
+---
+
+## 🚀 Быстрый старт
+
+### 1. Установка зависимостей
+```bash
+npm install
+```
+
+### 2. Запуск dev сервера
+```bash
+npm run dev
+```
+
+### 3. Откройте в браузере
+```
+http://localhost:5173
+```
+
+---
+
+## 📁 Структура проекта
+
+```
+src/
+├── api/                    # API операции
+│   ├── axios.js           # Конфигурация HTTP клиента
+│   ├── authApi.js         # Аутентификация
+│   ├── tripApi.js         # Работа с отпусками
+│   ├── boardApi.js        # Работа с досками
+│   └── accountsApi.js     # Управление аккаунтом
+│
+├── auth/
+│   └── AuthContext.jsx    # Глобальный контекст аутентификации
+│
+├── pages/
+│   ├── LoginPage.jsx      # Страница входа
+│   ├── RegisterPage.jsx   # Страница регистрации
+│   ├── TripsPage.jsx      # Список отпусков
+│   ├── TripDetailsPage.jsx # Детали отпуска
+│   ├── BoardDetailPage.jsx # Детали доски
+│   └── BoardPage.jsx      # Старая страница (можно удалить)
+│
+├── components/            # Переиспользуемые компоненты
+│   ├── Board.jsx          # Компонент доски
+│   ├── Sticker.jsx        # Компонент стикера
+│   ├── TripList.jsx       # Список отпусков
+│   └── AddTrip.jsx        # Форма добавления отпуска
+│
+├── router/
+│   └── router.jsx         # Конфигурация маршрутов
+│
+├── styles/
+│   └── main.scss          # Глобальные стили
+│
+├── App.jsx                # Главный компонент
+├── main.jsx               # Точка входа
+└── index.css              # CSS точки входа
+```
+
+---
+
+## 🗺️ Маршруты приложения
+
+| Путь | Страница | Описание |
+|------|----------|----------|
+| `/` | Login | Вход в приложение |
+| `/register` | Register | Регистрация нового пользователя |
+| `/trips` | Trips | Список всех отпусков пользователя |
+| `/trips/:tripId` | TripDetails | Детали конкретного отпуска |
+| `/boards/:boardId` | BoardDetail | Детали доски (в разработке) |
+
+---
+
+## 🎯 Функционал
+
+### ✅ Реализовано
+- [x] Аутентификация (вход, регистрация)
+- [x] Просмотр списка отпусков
+- [x] Создание нового отпуска
+- [x] Просмотр деталей отпуска
+- [x] Просмотр участников отпуска
+- [x] Просмотр списка досок отпуска
+- [x] Создание новой доски
+- [x] Навигация между страницами
+- [x] Красивый UI с анимациями
+- [x] Обработка ошибок
+
+### 🔄 В разработке
+- [ ] Полная функциональность досок (стикеры, карточки)
+- [ ] Редактирование отпусков
+- [ ] Удаление отпусков
+- [ ] Добавление участников
+- [ ] Удаление участников
+- [ ] Экспорт/импорт данных
+
+---
+
+## 🎨 Цветовая палитра
+
+```
+Основной синий:    #2563eb
+Тёмный синий:      #1e40af
+Светлый синий:     #3b82f6
+Очень светлый:     #dbeafe
+Фон страницы:      #f0f7ff
+Белый:             #ffffff
+Текст:             #1e293b
+Текст второй:      #64748b
+Опасный цвет:      #ef4444
+```
+
+---
+
+## 🔧 Команды
+
+```bash
+# Development
+npm run dev
+
+# Production build
+npm run build
+
+# Preview production build
+npm run preview
+
+# Lint code
+npm run lint
+```
+
+---
+
+## 📚 Используемые технологии
+
+- **React 18** - UI библиотека
+- **React Router 6** - Маршрутизация
+- **Axios** - HTTP клиент
+- **SCSS** - Препроцессор стилей
+- **Vite** - Сборщик проекта
+- **ES6+** - Современный JavaScript
+
+---
+
+## 📖 Документация
+
+Детальное описание смотрите в:
+- **[ARCHITECTURE.md](./ARCHITECTURE.md)** - Полная архитектура приложения
+- **[UI_GUIDE.md](./UI_GUIDE.md)** - Гайд по UI компонентам и цветовой гамме
+
+---
+
+## 🔗 Бэкенд интеграция
+
+Приложение интегрируется с бэкенд API на адресе:
+```
+https://localhost:7085/api
+```
+
+Бэкенд находится в папке `TripPlannerVibeCode/`
+
+---
+
+## ✨ Приложение готово к использованию! 🎉
 
 - From the workspace root open a terminal and run:
 

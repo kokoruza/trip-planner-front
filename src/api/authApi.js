@@ -9,16 +9,16 @@ export const login = async (username, password) => {
     return res.data
 }
 
-export const register = async (email, password) => {
+export const register = async (accountName, email, password) => {
     // Create account then immediately login to obtain tokens
     await api.post("/accounts/create", {
-        accountName: email,
+        accountName,
         email,
         passwordHash: password
     })
 
     const loginRes = await api.post("/auth/login", {
-        username: email,
+        username: accountName,
         password
     })
 
