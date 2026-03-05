@@ -5,6 +5,7 @@ import RegisterPage from "../pages/RegisterPage"
 import TripsPage from "../pages/TripsPage"
 import TripDetailsPage from "../pages/TripDetailsPage"
 import BoardDetailPage from "../pages/BoardDetailPage"
+import ProfilePage from "../pages/ProfilePage"
 
 export default function Router() {
 
@@ -16,6 +17,8 @@ export default function Router() {
 
                 <Route path="/" element={<LoginPage/>}/>
                 <Route path="/register" element={<RegisterPage/>}/>
+                <Route path="/profile" element={<ProfilePage/>}/>
+                <Route path="/profile/:accountId" element={<ProfilePage/>}/>
                 <Route path="/trips" element={<TripsPage/>}/>
                 <Route path="/trips/:tripId" element={<TripDetailsPage/>}/>
                 <Route path="/boards/:boardId" element={<BoardDetailPage/>}/>

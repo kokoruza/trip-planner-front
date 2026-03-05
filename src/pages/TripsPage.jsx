@@ -76,6 +76,9 @@ export default function TripsPage() {
                 <button className="btn-primary" onClick={() => setShowModal(true)}>
                     + Создать новый
                 </button>
+                <button className="btn-ghost" onClick={() => navigate("/profile")} style={{ marginLeft: "12px" }}>
+                    👤 Профиль
+                </button>
                 <button className="btn-ghost" onClick={handleLogout} style={{ marginLeft: "12px" }}>
                     Выход
                 </button>

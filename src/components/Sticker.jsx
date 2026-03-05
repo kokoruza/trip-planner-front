@@ -74,8 +74,9 @@ export default function Sticker({ card, onUpdate, onDelete, isDragging, onDragSt
                 className="sticker sticker-editing"
                 style={{
                     position: "absolute",
-                    left: card.positionX,
-                    top: card.positionY,
+                    left: 0,
+                    top: 0,
+                    transform: `translate(${card.positionX}px, ${card.positionY}px)`,
                     background: editColor,
                     zIndex: 100
                 }}
@@ -140,8 +141,9 @@ export default function Sticker({ card, onUpdate, onDelete, isDragging, onDragSt
             className={`sticker ${isDragging ? 'dragging' : ''}`}
             style={{
                 position: "absolute",
-                left: `${card.positionX}px`,
-                top: `${card.positionY}px`,
+                left: 0,
+                top: 0,
+                transform: `translate(${card.positionX}px, ${card.positionY}px)`,
                 background: card.color || "#fff9c4",
                 cursor: isDragging ? "grabbing" : "grab",
                 zIndex: isDragging ? 1000 : 10

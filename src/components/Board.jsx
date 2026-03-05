@@ -1,11 +1,14 @@
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import Sticker from "./Sticker"
 import { createCard } from "../api/boardApi"
 
 export default function Canvas({ boardId, cards, onUpdate, onDelete, onCardCreate, onNavigateBack }) {
     const canvasRef = useRef(null)
     const innerRef = useRef(null)
-    const dragStateRef = useRef(null)  // Ref для синхронного обновления до следующего render
+    const dragStateRef = useRef(null)
+    const smoothPosRef = useRef(null)
+    const animationFrameRef = useRef(null)
+    const optimisticPosRef = useRef({})  // Кэш оптимистических позиций карточек
     const [zoom, setZoom] = useState(1)
     const [pan, setPan] = useState({ x: 0, y: 0 })
     const [isDraggingCanvas, setIsDraggingCanvas] = useState(false)
@@ -13,6 +16,17 @@ export default function Canvas({ boardId, cards, onUpdate, onDelete, onCardCreat
     const [draggedCard, setDraggedCard] = useState(null)
     const [isCreatingSticker, setIsCreatingSticker] = useState(false)
     const [error, setError] = useState("")
+
+    // Очищаем оптимистические позиции когда карточки обновляются на сервере
+    useEffect(() => {
+        cards.forEach(card => {
+            const optimistic = optimisticPosRef.current[card.id]
+            if (optimistic) {
+                // Если сервер вернул обновленную позицию, очищаем оптимистическую
+                delete optimisticPosRef.current[card.id]
+            }
+        })
+    }, [cards])
 
     // Zoom with mouse wheel (any zoom level)
     const handleWheel = (e) => {
@@ -52,40 +66,84 @@ export default function Canvas({ boardId, cards, onUpdate, onDelete, onCardCreat
             })
         }
         
-        // Синхронно обновляем ref с текущей позицией мыши для плавного перетаскивания
+        // Обновляем целевую позицию и запускаем smooth animation
         if (dragStateRef.current?.id) {
             dragStateRef.current.currentScreenX = e.clientX
             dragStateRef.current.currentScreenY = e.clientY
             
-            // Триггер re-render чтобы применить новую позицию
-            setDraggedCard(prev => prev ? { ...prev } : null)
+            // Инициализируем smoothPos если не существует
+            if (!smoothPosRef.current) {
+                const screenDeltaX = dragStateRef.current.currentScreenX - dragStateRef.current.startScreenX
+                const screenDeltaY = dragStateRef.current.currentScreenY - dragStateRef.current.startScreenY
+                const worldDeltaX = screenDeltaX / zoom
+                const worldDeltaY = screenDeltaY / zoom
+                
+                smoothPosRef.current = {
+                    x: dragStateRef.current.cardStartX + worldDeltaX,
+                    y: dragStateRef.current.cardStartY + worldDeltaY
+                }
+            }
+            
+            // Запускаем smooth animation loop если не запущен
+            if (!animationFrameRef.current) {
+                const animate = () => {
+                    if (!dragStateRef.current?.id) return
+                    
+                    // Вычисляем целевую позицию
+                    const screenDeltaX = dragStateRef.current.currentScreenX - dragStateRef.current.startScreenX
+                    const screenDeltaY = dragStateRef.current.currentScreenY - dragStateRef.current.startScreenY
+                    const worldDeltaX = screenDeltaX / zoom
+                    const worldDeltaY = screenDeltaY / zoom
+                    
+                    const targetX = dragStateRef.current.cardStartX + worldDeltaX
+                    const targetY = dragStateRef.current.cardStartY + worldDeltaY
+                    
+                    // Эasing: плавный переход (скорость интерполяции 0.15 = 15% от расстояния за frame)
+                    const easing = 0.15
+                    smoothPosRef.current.x += (targetX - smoothPosRef.current.x) * easing
+                    smoothPosRef.current.y += (targetY - smoothPosRef.current.y) * easing
+                    
+                    // Обновляем state с интерполированной позицией
+                    setDraggedCard(prev => prev ? { ...prev } : null)
+                    
+                    // Продолжаем анимацию
+                    animationFrameRef.current = requestAnimationFrame(animate)
+                }
+                
+                animationFrameRef.current = requestAnimationFrame(animate)
+            }
         }
     }
 
     const handleMouseUp = () => {
         setIsDraggingCanvas(false)
         
+        // Отменяем pending animation frame
+        if (animationFrameRef.current) {
+            cancelAnimationFrame(animationFrameRef.current)
+            animationFrameRef.current = null
+        }
+        
         // Сохраняем карточку, если она была перетащена
-        if (dragStateRef.current?.id) {
-            const screenDeltaX = dragStateRef.current.currentScreenX - dragStateRef.current.startScreenX
-            const screenDeltaY = dragStateRef.current.currentScreenY - dragStateRef.current.startScreenY
+        if (dragStateRef.current?.id && smoothPosRef.current) {
+            const cardId = dragStateRef.current.id
+            const finalX = Math.round(smoothPosRef.current.x)
+            const finalY = Math.round(smoothPosRef.current.y)
             
-            const worldDeltaX = screenDeltaX / zoom
-            const worldDeltaY = screenDeltaY / zoom
+            // Сохраняем оптимистическую позицию, чтобы избежать мелькания
+            optimisticPosRef.current[cardId] = { x: finalX, y: finalY }
             
-            const finalX = dragStateRef.current.cardStartX + worldDeltaX
-            const finalY = dragStateRef.current.cardStartY + worldDeltaY
-
-            const card = cards.find(c => c.id === dragStateRef.current.id)
+            const card = cards.find(c => c.id === cardId)
             if (card) {
                 onUpdate({
                     ...card,
-                    positionX: Math.round(finalX),
-                    positionY: Math.round(finalY)
+                    positionX: finalX,
+                    positionY: finalY
                 })
             }
             
             dragStateRef.current = null
+            smoothPosRef.current = null
             setDraggedCard(null)
         }
     }
@@ -149,6 +207,12 @@ export default function Canvas({ boardId, cards, onUpdate, onDelete, onCardCreat
             currentScreenY: e.clientY,
             cardStartX: card.positionX,
             cardStartY: card.positionY
+        }
+        
+        // Инициализируем smoothPos с текущей позицией карточки
+        smoothPosRef.current = {
+            x: card.positionX,
+            y: card.positionY
         }
         
         // Также обновляем state для рендера
@@ -232,19 +296,26 @@ return (
                 >
                     <div className="board-grid">
                         {cards && cards.map(card => {
-                            // Если карточка в процессе drag, вычисляем её временную позицию
-                            // Используем ref для синхронной позиции мыши (без задержки state)
+                            // Приоритет отображения позиции:
+                            // 1. Оптимистическая позиция (после отпуска, до обновления сервера)
+                            // 2. Интерполированная позиция во время drag
+                            // 3. Позиция из props (по умолчанию)
                             let displayCard = card
-                            if (dragStateRef.current?.id === card.id) {
-                                const screenDeltaX = dragStateRef.current.currentScreenX - dragStateRef.current.startScreenX
-                                const screenDeltaY = dragStateRef.current.currentScreenY - dragStateRef.current.startScreenY
-                                const worldDeltaX = screenDeltaX / zoom
-                                const worldDeltaY = screenDeltaY / zoom
-                                
+                            const optimisticPos = optimisticPosRef.current[card.id]
+                            
+                            if (optimisticPos) {
+                                // Используем оптимистическую позицию
                                 displayCard = {
                                     ...card,
-                                    positionX: dragStateRef.current.cardStartX + worldDeltaX,
-                                    positionY: dragStateRef.current.cardStartY + worldDeltaY
+                                    positionX: optimisticPos.x,
+                                    positionY: optimisticPos.y
+                                }
+                            } else if (dragStateRef.current?.id === card.id && smoothPosRef.current) {
+                                // Используем интерполированную позицию во время drag
+                                displayCard = {
+                                    ...card,
+                                    positionX: smoothPosRef.current.x,
+                                    positionY: smoothPosRef.current.y
                                 }
                             }
                             
