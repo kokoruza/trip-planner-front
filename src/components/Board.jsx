@@ -245,7 +245,7 @@ return (
 
             {error && <div className="board-error">{error}</div>}
 
-            <div
+                <div
                 ref={canvasRef}
                 className="board-canvas"
                 onWheel={handleWheel}
@@ -255,6 +255,7 @@ return (
                 onMouseLeave={handleMouseUp}
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}
+                    onTouchEnd={handleMouseUp}
             >
                 {/* Zoom Controls */}
                 <div className="zoom-controls-floating">

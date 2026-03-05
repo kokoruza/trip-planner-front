@@ -2,6 +2,8 @@ import { useEffect, useState, useContext } from "react"
 import { useNavigate, Link } from "react-router-dom"
 import { getMyTrips, createTrip } from "../api/tripApi"
 import { AuthContext } from "../auth/AuthContext"
+import UserMenu from "../components/UserMenu"
+import ThemeToggle from "../components/ThemeToggle"
 
 export default function TripsPage() {
 
@@ -73,15 +75,13 @@ export default function TripsPage() {
         <div className="page trips-page">
             <div className="trips-header">
                 <h1>Мои отпуска</h1>
-                <button className="btn-primary" onClick={() => setShowModal(true)}>
-                    + Создать новый
-                </button>
-                <button className="btn-ghost" onClick={() => navigate("/profile")} style={{ marginLeft: "12px" }}>
-                    👤 Профиль
-                </button>
-                <button className="btn-ghost" onClick={handleLogout} style={{ marginLeft: "12px" }}>
-                    Выход
-                </button>
+                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                    <ThemeToggle />
+                    <button className="btn-primary" onClick={() => setShowModal(true)}>
+                        + Создать новый
+                    </button>
+                    <UserMenu />
+                </div>
             </div>
 
             {error && (

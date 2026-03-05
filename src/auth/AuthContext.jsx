@@ -79,7 +79,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ user, signIn, signUp, logout }}>
+        <AuthContext.Provider value={{ user, signIn, signUp, logout, isAuthenticated: !!user || !!localStorage.getItem("accountId") }}>
             {children}
         </AuthContext.Provider>
     )

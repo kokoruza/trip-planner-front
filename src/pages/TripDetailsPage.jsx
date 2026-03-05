@@ -3,6 +3,9 @@ import { useParams, useNavigate, Link } from "react-router-dom"
 import { getMyTrips } from "../api/tripApi"
 import { getBoards, createBoard } from "../api/boardApi"
 import { AuthContext } from "../auth/AuthContext"
+import UserMenu from "../components/UserMenu"
+import ThemeToggle from "../components/ThemeToggle"
+import TripMembersManager from "../components/TripMembersManager"
 
 export default function TripDetailsPage() {
 
@@ -125,9 +128,10 @@ export default function TripDetailsPage() {
                             ← Вернуться
                         </Link>
                     </div>
-                    <button className="btn-ghost" onClick={handleLogout}>
-                        Выход
-                    </button>
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                        <ThemeToggle />
+                        <UserMenu />
+                    </div>
                 </div>
 
                 {/* Trip Header */}
@@ -142,22 +146,12 @@ export default function TripDetailsPage() {
                 {/* Trip Info Grid */}
                 <div className="trip-info-grid">
                     {/* Members Section */}
-                    <div className="trip-section">
-                        <h2>👥 Участники</h2>
-                        <div className="section-content">
-                            {trip.members && trip.members.length > 0 ? (
-                                trip.members.map(member => (
-                                    <div key={member.id} className="member-item">
-                                        {member.accountName || member.email}
-                                    </div>
-                                ))
-                            ) : (
-                                <div className="empty-message">
-                                    Нет участников
-                                </div>
-                            )}
-                        </div>
-                    </div>
+                    <TripMembersManager 
+                        trip={trip} 
+                        onMembersUpdate={(members) => {
+                            setTrip({ ...trip, members })
+                        }}
+                    />
 
                     {/* Trip Info Section */}
                     <div className="trip-section">
@@ -281,6 +275,51 @@ export default function TripDetailsPage() {
                         </div>
                     </div>
                 )}
+
+                {/* Quick Links to Polls & Gallery */}
+                <div style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                    gap: "12px",
+                    marginTop: "24px"
+                }}>
+                    <Link
+                        to={`/trips/${tripId}/polls`}
+                        className="btn-primary"
+                        style={{
+                            padding: "16px",
+                            textAlign: "center",
+                            textDecoration: "none",
+                            borderRadius: "8px",
+                            fontSize: "16px",
+                            fontWeight: "600",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "8px"
+                        }}
+                    >
+                        🗳️ Голосования
+                    </Link>
+                    <Link
+                        to={`/trips/${tripId}/gallery`}
+                        className="btn-primary"
+                        style={{
+                            padding: "16px",
+                            textAlign: "center",
+                            textDecoration: "none",
+                            borderRadius: "8px",
+                            fontSize: "16px",
+                            fontWeight: "600",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "8px"
+                        }}
+                    >
+                        🖼️ Галерея
+                    </Link>
+                </div>
             </div>
         </div>
     )

@@ -1,4 +1,4 @@
-/* Global styles for Trip Planner - Blue & White Theme */
+/* Global styles for Trip Planner - Blue & White Theme with Dark Mode Support */
 
 :root {
   /* Blue & White Color Palette */
@@ -21,6 +21,43 @@
   --radius: 12px;          /* Border Radius */
   --shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
   --shadow-hover: 0 8px 24px rgba(37, 99, 235, 0.12);
+  
+  /* Sticker Colors - Stay Yellow */
+  --sticker-default-bg: #fff9c4;
+  --sticker-text: #333;
+  --sticker-border: rgba(0, 0, 0, 0.05);
+  --sticker-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --sticker-shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.15);
+  --sticker-shadow-drag: 0 12px 28px rgba(0, 0, 0, 0.2);
+  
+  /* Canvas Background - Light Theme */
+  --canvas-bg: linear-gradient(180deg, #fbfdff, #f3f7fb);
+}
+
+/* Dark theme overrides */
+html[data-theme="dark"] {
+  --bg: #020617;
+  --bg-secondary: #0f172a;
+  --text: #e5e7eb;
+  --text-secondary: #9ca3af;
+  --text-light: #6b7280;
+  --white: #020617;
+  --border: #1f2937;
+  --hover: #111827;
+  --primary-pale: #111827;
+  --shadow: 0 4px 16px rgba(15, 23, 42, 0.9);
+  --shadow-hover: 0 8px 32px rgba(15, 23, 42, 0.95);
+  
+  /* Sticker Colors - Keep Yellow (no change) */
+  --sticker-default-bg: #fff9c4;
+  --sticker-text: #333;
+  --sticker-border: rgba(0, 0, 0, 0.05);
+  --sticker-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --sticker-shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.15);
+  --sticker-shadow-drag: 0 12px 28px rgba(0, 0, 0, 0.2);
+  
+  /* Canvas Background - Dark Theme */
+  --canvas-bg: linear-gradient(180deg, #111827, #0f172a);
 }
 
 * {
@@ -286,7 +323,7 @@ textarea {
   transition: background 0.3s ease;
   
   &:hover {
-    background: #fafbff;
+    background: var(--hover);
   }
 }
 
@@ -715,7 +752,7 @@ textarea {
   flex: 1;
   padding: 8px;
   border-radius: 6px;
-  border: 1px solid #e6edf3;
+  border: 1px solid var(--border);
 }
 
 .create-board-form button {
@@ -734,22 +771,14 @@ textarea {
 .board-canvas {
   width: 100%;
   height: 600px;
-  background: linear-gradient(180deg, #fbfdff, #f3f7fb);
+  background: var(--canvas-bg);
   position: relative;
   border-radius: 8px;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
   padding: 12px;
 }
 
-.sticker {
-  width: 150px;
-  height: 150px;
-  background: #fff9c4;
-  padding: 10px;
-  border-radius: 6px;
-  box-shadow: 0 4px 10px rgba(2,6,23,0.08);
-  overflow: hidden;
-}
+// (старый блок .sticker здесь оставляем как есть – ниже более детальная версия)
 
 .add-trip {
   margin-bottom: 20px;
@@ -764,7 +793,7 @@ textarea {
 .add-trip input {
   padding: 8px;
   border-radius: 6px;
-  border: 1px solid #e6edf3;
+  border: 1px solid var(--border);
 }
 
 .add-trip button {
@@ -786,7 +815,7 @@ textarea {
   display: flex;
   justify-content: space-between;
   padding: 6px 0;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--border);
 }
 
 .trip-item:last-child { border-bottom: none; }
@@ -867,6 +896,92 @@ textarea {
   }
 }
 
+.user-menu {
+  position: relative;
+}
+
+.user-menu-trigger {
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.user-menu-trigger:hover {
+  background: var(--primary-light);
+  opacity: 0.8;
+}
+
+.user-menu-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--white);
+}
+
+.user-menu-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-menu-dropdown {
+  position: absolute;
+  right: 0;
+  top: 120%;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  padding: 4px 0;
+  min-width: 140px;
+  z-index: 1000;
+}
+
+.user-menu-item {
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.user-menu-item:hover {
+  background: var(--hover);
+}
+
+.user-menu-item-logout {
+  color: #ef4444;
+}
+
+.user-menu-item-logout:hover {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.theme-toggle {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 20px;
+  margin-right: 8px;
+}
+
 .zoom-in {
   background: var(--primary);
 }
@@ -929,7 +1044,7 @@ textarea {
 
 .board-canvas {
   flex: 1;
-  background: linear-gradient(180deg, #fbfdff 0%, #f3f7fb 100%);
+  background: var(--canvas-bg);
   position: relative;
   overflow: hidden;
   cursor: grab;
@@ -938,7 +1053,7 @@ textarea {
   height: calc(100% - 53px);
   
   &:hover {
-    background: linear-gradient(180deg, #fdfdfd 0%, #f5f9ff 100%);
+    background: var(--canvas-bg);
   }
   
   &:active {
@@ -972,25 +1087,26 @@ textarea {
   width: 140px;
   min-height: 140px;
   padding: 12px;
-  background: #fff9c4;
+  background: var(--sticker-default-bg);
   border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--sticker-shadow);
   cursor: grab;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--sticker-border);
   display: flex;
   flex-direction: column;
   gap: 8px;
   z-index: 10;
   user-select: none;
   will-change: transform;
+  transition: box-shadow 0.2s ease;
   
   &:hover {
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--sticker-shadow-hover);
   }
   
   &.dragging {
     cursor: grabbing;
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--sticker-shadow-drag);
     z-index: 1000;
     opacity: 0.95;
   }
@@ -1000,11 +1116,41 @@ textarea {
   }
 }
 
+.sticker-owner-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 2px var(--white);
+}
+
+.sticker-owner-badge img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sticker-owner-initials {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .sticker-content {
   flex: 1;
   font-size: 13px;
   line-height: 1.4;
-  color: #333;
+  color: var(--sticker-text);
   word-wrap: break-word;
   word-break: break-word;
   overflow-y: auto;
@@ -1030,7 +1176,7 @@ textarea {
   border: none;
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.8);
-  color: #333;
+  color: var(--sticker-text);
   font-size: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -1074,7 +1220,7 @@ textarea {
   max-height: 90vh;
   overflow-y: auto;
   z-index: 1001 !important;
-  background: white !important;
+  background: var(--white) !important;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25) !important;
   border: 2px solid var(--primary) !important;
   height: auto !important;
@@ -1087,7 +1233,7 @@ textarea {
 .sticker-textarea {
   flex: 1;
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border);
   border-radius: 4px;
   font-size: 13px;
   font-family: inherit;
@@ -1095,6 +1241,8 @@ textarea {
   min-height: 100px;
   max-height: 200px;
   line-height: 1.4;
+  background: var(--white);
+  color: var(--text);
   
   &:focus {
     outline: none;
@@ -1113,19 +1261,19 @@ textarea {
 .sticker-color-preview {
   width: 100%;
   height: 36px;
-  border: 2px solid #ddd;
+  border: 2px solid var(--border);
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
   padding: 0;
   font-size: 12px;
   font-weight: 600;
-  color: #333;
+  color: var(--text);
   background-size: 10px 10px;
-  background-image: linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc), linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc);
+  background-image: linear-gradient(45deg, var(--border) 25%, transparent 25%, transparent 75%, var(--border) 75%, var(--border)), linear-gradient(45deg, var(--border) 25%, transparent 25%, transparent 75%, var(--border) 75%, var(--border));
   background-position: 0 0, 5px 5px;
   background-size: 10px 10px;
-  background-color: #fafafa;
+  background-color: var(--hover);
   
   &:hover {
     border-color: var(--primary);
@@ -1139,8 +1287,8 @@ textarea {
   grid-template-columns: repeat(4, 1fr);
   gap: 10px;
   padding: 10px;
-  background: #fafafa;
-  border: 1px solid #ddd;
+  background: var(--hover);
+  border: 1px solid var(--border);
   border-radius: 6px;
   z-index: 1002;
   margin-top: 8px;

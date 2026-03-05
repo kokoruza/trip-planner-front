@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { updateCard, deleteCard } from "../api/boardApi"
+import { API_ORIGIN } from "../api/axios"
 
 const PREDEFINED_COLORS = [
     "#fff9c4", // Yellow
@@ -14,7 +15,6 @@ const PREDEFINED_COLORS = [
 ]
 
 export default function Sticker({ card, onUpdate, onDelete, isDragging, onDragStart }) {
-
     const [isEditing, setIsEditing] = useState(false)
     const [editText, setEditText] = useState(card.text)
     const [editColor, setEditColor] = useState(card.color || "#fff9c4")
@@ -67,6 +67,10 @@ export default function Sticker({ card, onUpdate, onDelete, isDragging, onDragSt
         setIsEditing(false)
         setError("")
     }
+
+    const ownerAvatarUrl = card.ownerAvatarPath
+        ? `${API_ORIGIN}${card.ownerAvatarPath}`
+        : null
 
     if (isEditing) {
         return (
@@ -152,6 +156,21 @@ export default function Sticker({ card, onUpdate, onDelete, isDragging, onDragSt
             onDoubleClick={() => setIsEditing(true)}
             title="Двойной клик для редактирования, перетащите для перемещения"
         >
+            <div
+                className="sticker-owner-badge"
+                title={card.ownerAccountName || "Автор"}
+            >
+                {ownerAvatarUrl ? (
+                    <img
+                        src={ownerAvatarUrl}
+                        alt={card.ownerAccountName || "Автор"}
+                    />
+                ) : (
+                    <span className="sticker-owner-initials">
+                        {(card.ownerAccountName || "?")[0].toUpperCase()}
+                    </span>
+                )}
+            </div>
             <div className="sticker-content">
                 {card.text}
             </div>

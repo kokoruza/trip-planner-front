@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom"
 import { AuthContext } from "../auth/AuthContext"
 import { getAccount, updateAccount, deleteAccount, uploadAvatar } from "../api/accountsApi"
 import { API_ORIGIN } from "../api/axios"
+import UserMenu from "../components/UserMenu"
+import ThemeToggle from "../components/ThemeToggle"
 
 export default function ProfilePage() {
     const { accountId } = useParams()
@@ -80,7 +82,8 @@ export default function ProfilePage() {
             const updated = await uploadAvatar(profileIdToLoad, file)
             setProfile(prev => ({
                 ...prev,
-                avatarPath: updated.avatarPath
+                // добавляем query-параметр, чтобы обойти кэш браузера
+                avatarPath: updated.avatarPath ? `${updated.avatarPath}?v=${Date.now()}` : null
             }))
             setSuccess("Аватар успешно обновлён")
         } catch (err) {
@@ -174,14 +177,17 @@ export default function ProfilePage() {
     return (
         <div className="page">
             <div style={{ maxWidth: "600px", margin: "0 auto" }}>
-                <div style={{ marginBottom: "24px" }}>
+                <div className="page-header" style={{ paddingBottom: "16px", borderBottom: "2px solid white" }}>
                     <button
                         className="btn-secondary"
                         onClick={() => navigate(-1)}
-                        style={{ marginBottom: "16px" }}
                     >
                         ← Назад
                     </button>
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                        <ThemeToggle />
+                        <UserMenu />
+                    </div>
                 </div>
 
                 <div style={{

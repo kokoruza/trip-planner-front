@@ -6,6 +6,9 @@ import TripsPage from "../pages/TripsPage"
 import TripDetailsPage from "../pages/TripDetailsPage"
 import BoardDetailPage from "../pages/BoardDetailPage"
 import ProfilePage from "../pages/ProfilePage"
+import JoinTripPage from "../pages/JoinTripPage"
+import PollsPage from "../pages/PollsPage"
+import GalleryPage from "../pages/GalleryPage"
 
 export default function Router() {
 
@@ -21,6 +24,9 @@ export default function Router() {
                 <Route path="/profile/:accountId" element={<ProfilePage/>}/>
                 <Route path="/trips" element={<TripsPage/>}/>
                 <Route path="/trips/:tripId" element={<TripDetailsPage/>}/>
+                <Route path="/trips/:tripId/polls" element={<PollsPage/>}/>
+                <Route path="/trips/:tripId/gallery" element={<GalleryPage/>}/>
+                <Route path="/join/:tripId" element={<JoinTripPage/>}/>
                 <Route path="/boards/:boardId" element={<BoardDetailPage/>}/>
                 <Route path="*" element={<Navigate to="/" />} />
 

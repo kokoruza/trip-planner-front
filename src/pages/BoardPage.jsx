@@ -5,6 +5,8 @@ import { AuthContext } from "../auth/AuthContext"
 import { useNavigate } from "react-router-dom"
 import { getMyTrips } from "../api/tripApi"
 import TripList from "../components/TripList"
+import UserMenu from "../components/UserMenu"
+import ThemeToggle from "../components/ThemeToggle"
 
 export default function BoardPage() {
 
@@ -74,7 +76,10 @@ export default function BoardPage() {
 
             <div className="page-header">
                 <h1>Boards</h1>
-                <button onClick={handleLogout} className="btn-ghost">Logout</button>
+                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                    <ThemeToggle />
+                    <UserMenu />
+                </div>
             </div>
 
             <div className="board-layout">
