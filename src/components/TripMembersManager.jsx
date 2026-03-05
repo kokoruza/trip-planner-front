@@ -3,6 +3,7 @@ import { getTripMembers, removeTripMember } from "../api/tripApi"
 import { getAccount } from "../api/accountsApi"
 import { AuthContext } from "../auth/AuthContext"
 import { API_ORIGIN } from "../api/axios"
+import UserLink from "./UserLink"
 
 export default function TripMembersManager({ trip, onMembersUpdate }) {
     const { user } = useContext(AuthContext)
@@ -188,10 +189,6 @@ export default function TripMembersManager({ trip, onMembersUpdate }) {
                     </div>
                 ) : (
                     members.map(member => {
-                        const avatarUrl = member.avatarPath
-                            ? `${API_ORIGIN}${member.avatarPath}`
-                            : null
-
                         return (
                         <div 
                             key={member.accountId} 
@@ -207,37 +204,15 @@ export default function TripMembersManager({ trip, onMembersUpdate }) {
                             }}
                         >
                             <div style={{ display: "flex", alignItems: "center", gap: "12px", flex: 1 }}>
-                                <div style={{
-                                    width: "40px",
-                                    height: "40px",
-                                    borderRadius: "50%",
-                                    overflow: "hidden",
-                                    background: "var(--white)",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    fontSize: "16px",
-                                    fontWeight: "600",
-                                    color: "var(--primary)",
-                                    flexShrink: 0
-                                }}>
-                                    {avatarUrl ? (
-                                        <img
-                                            src={avatarUrl}
-                                            alt={member.accountName || "Участник"}
-                                            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                                        />
-                                    ) : (
-                                        <span>{(member.accountName || "?")[0].toUpperCase()}</span>
-                                    )}
-                                </div>
-                                <div style={{ flex: 1 }}>
-                                    <div style={{ fontWeight: "500", color: "var(--text)" }}>
-                                        {member.accountName || member.email}
-                                    </div>
-                                    <div style={{ fontSize: "12px", color: "var(--text-light)" }}>
-                                        {member.role || "User"}
-                                    </div>
+                                <UserLink
+                                    accountId={member.accountId}
+                                    name={member.accountName}
+                                    avatar={member.avatarPath}
+                                    size="md"
+                                    showName={true}
+                                />
+                                <div style={{ fontSize: "12px", color: "var(--text-light)" }}>
+                                    {member.role || "User"}
                                 </div>
                             </div>
                             {isOwner && member.accountId !== currentUserId && (

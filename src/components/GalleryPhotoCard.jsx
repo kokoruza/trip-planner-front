@@ -2,6 +2,7 @@ import { useContext } from "react"
 import { AuthContext } from "../auth/AuthContext"
 import { deleteGalleryPhoto, likePhoto, unlikePhoto } from "../api/galleryApi"
 import { API_ORIGIN } from "../api/axios"
+import UserLink from "./UserLink"
 
 export default function GalleryPhotoCard({ photo, onPhotoUpdated, onPhotoDeleted, onPhotoClick }) {
     const { user } = useContext(AuthContext)
@@ -99,29 +100,16 @@ export default function GalleryPhotoCard({ photo, onPhotoUpdated, onPhotoDeleted
                 </div>
 
                 {/* User Info */}
-                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px", fontSize: "12px", color: "var(--text-light)" }}>
-                    <div style={{
-                        width: "24px",
-                        height: "24px",
-                        borderRadius: "50%",
-                        overflow: "hidden",
-                        background: "var(--primary)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        color: "white",
-                        fontSize: "11px",
-                        fontWeight: "600"
-                    }}>
-                        {photo.uploadedByAvatar ? (
-                            <img src={`${API_ORIGIN}${photo.uploadedByAvatar}`} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                        ) : (
-                            <span>{photo.uploadedByName?.[0]?.toUpperCase() || "?"}</span>
-                        )}
-                    </div>
-                    <span>{photo.uploadedByName}</span>
-                    <span>•</span>
-                    <span>{new Date(photo.createdAt).toLocaleDateString("ru-RU")}</span>
+                <UserLink
+                    accountId={photo.uploadedById}
+                    name={photo.uploadedByName}
+                    avatar={photo.uploadedByAvatar}
+                    size="sm"
+                    showName={true}
+                    style={{ marginBottom: "8px" }}
+                />
+                <div style={{ fontSize: "12px", color: "var(--text-light)" }}>
+                    {new Date(photo.createdAt).toLocaleDateString("ru-RU")}
                 </div>
 
                 {/* Description */}

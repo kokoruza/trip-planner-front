@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { updateCard, deleteCard } from "../api/boardApi"
 import { API_ORIGIN } from "../api/axios"
 
@@ -15,6 +16,7 @@ const PREDEFINED_COLORS = [
 ]
 
 export default function Sticker({ card, onUpdate, onDelete, isDragging, onDragStart }) {
+    const navigate = useNavigate()
     const [isEditing, setIsEditing] = useState(false)
     const [editText, setEditText] = useState(card.text)
     const [editColor, setEditColor] = useState(card.color || "#fff9c4")
@@ -159,6 +161,11 @@ export default function Sticker({ card, onUpdate, onDelete, isDragging, onDragSt
             <div
                 className="sticker-owner-badge"
                 title={card.ownerAccountName || "Автор"}
+                style={{ cursor: "pointer" }}
+                onClick={(e) => {
+                    e.stopPropagation()
+                    navigate(`/profile/${card.ownerId}`)
+                }}
             >
                 {ownerAvatarUrl ? (
                     <img

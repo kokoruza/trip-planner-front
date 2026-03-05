@@ -2,6 +2,7 @@ import { useState, useContext } from "react"
 import { AuthContext } from "../auth/AuthContext"
 import { likePhoto, unlikePhoto, addComment, deleteComment } from "../api/galleryApi"
 import { API_ORIGIN } from "../api/axios"
+import UserLink from "./UserLink"
 
 export default function GalleryPhotoModal({ photo, onClose, onPhotoUpdated }) {
     const { user } = useContext(AuthContext)
@@ -152,31 +153,15 @@ export default function GalleryPhotoModal({ photo, onClose, onPhotoUpdated }) {
                     </h2>
 
                     {/* User Info */}
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px", fontSize: "12px", color: "var(--text-light)" }}>
-                        <div style={{
-                            width: "24px",
-                            height: "24px",
-                            borderRadius: "50%",
-                            overflow: "hidden",
-                            background: "var(--primary)",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            color: "white",
-                            fontSize: "10px",
-                            fontWeight: "600",
-                            flexShrink: 0
-                        }}>
-                            {photo.uploadedByAvatar ? (
-                                <img src={`${API_ORIGIN}${photo.uploadedByAvatar}`} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                            ) : (
-                                <span>{photo.uploadedByName?.[0]?.toUpperCase() || "?"}</span>
-                            )}
-                        </div>
-                        <div>
-                            <div style={{ fontWeight: "600" }}>{photo.uploadedByName}</div>
-                            <div>{new Date(photo.createdAt).toLocaleDateString("ru-RU")}</div>
-                        </div>
+                    <UserLink
+                        accountId={photo.uploadedById}
+                        name={photo.uploadedByName}
+                        avatar={photo.uploadedByAvatar}
+                        size="md"
+                        showName={true}
+                    />
+                    <div style={{ fontSize: "12px", color: "var(--text-light)" }}>
+                        {new Date(photo.createdAt).toLocaleDateString("ru-RU")}
                     </div>
 
                     {/* Description */}
@@ -233,10 +218,14 @@ export default function GalleryPhotoModal({ photo, onClose, onPhotoUpdated }) {
                                     fontSize: "12px"
                                 }}>
                                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
-                                        <div style={{ fontWeight: "600", color: "var(--primary)" }}>
-                                            {comment.authorName}
-                                        </div>
-                                        {comment.authorId === currentUserId && (
+                                        <UserLink
+                                            accountId={comment.commentedById}
+                                            name={comment.commentedByName}
+                                            avatar={comment.commentedByAvatar}
+                                            size="sm"
+                                            showName={true}
+                                        />
+                                        {comment.commentedById === currentUserId && (
                                             <button
                                                 onClick={() => handleDeleteComment(comment.id)}
                                                 style={{
@@ -253,10 +242,10 @@ export default function GalleryPhotoModal({ photo, onClose, onPhotoUpdated }) {
                                             </button>
                                         )}
                                     </div>
-                                    <div style={{ color: "var(--text)", wordBreak: "break-word" }}>
+                                    <div style={{ color: "var(--text)", wordBreak: "break-word", marginLeft: "32px" }}>
                                         {comment.text}
                                     </div>
-                                    <div style={{ fontSize: "11px", color: "var(--text-light)", marginTop: "4px" }}>
+                                    <div style={{ fontSize: "11px", color: "var(--text-light)", marginTop: "4px", marginLeft: "32px" }}>
                                         {new Date(comment.createdAt).toLocaleDateString("ru-RU")}
                                     </div>
                                 </div>
