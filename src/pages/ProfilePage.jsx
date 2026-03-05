@@ -1,7 +1,8 @@
 import { useState, useEffect, useContext } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { AuthContext } from "../auth/AuthContext"
-import { getAccount, updateAccount, deleteAccount } from "../api/accountsApi"
+import { getAccount, updateAccount, deleteAccount, uploadAvatar } from "../api/accountsApi"
+import { API_ORIGIN } from "../api/axios"
 
 export default function ProfilePage() {
     const { accountId } = useParams()
@@ -14,6 +15,7 @@ export default function ProfilePage() {
     const [saving, setSaving] = useState(false)
     const [error, setError] = useState("")
     const [success, setSuccess] = useState("")
+    const [uploading, setUploading] = useState(false)
 
     const [editForm, setEditForm] = useState({
         accountName: "",
@@ -64,6 +66,30 @@ export default function ProfilePage() {
         setIsEditing(true)
         setError("")
         setSuccess("")
+    }
+
+    const handleAvatarChange = async (e) => {
+        const file = e.target.files?.[0]
+        if (!file || !profileIdToLoad) return
+
+        setError("")
+        setSuccess("")
+        setUploading(true)
+
+        try {
+            const updated = await uploadAvatar(profileIdToLoad, file)
+            setProfile(prev => ({
+                ...prev,
+                avatarPath: updated.avatarPath
+            }))
+            setSuccess("Аватар успешно обновлён")
+        } catch (err) {
+            setError(err?.response?.data || "Ошибка при загрузке аватара")
+        } finally {
+            setUploading(false)
+            // сброс input, чтобы можно было выбрать тот же файл
+            e.target.value = ""
+        }
     }
 
     const handleCancel = () => {
@@ -141,6 +167,10 @@ export default function ProfilePage() {
         )
     }
 
+    const avatarUrl = profile.avatarPath
+        ? `${API_ORIGIN}${profile.avatarPath}`
+        : null
+
     return (
         <div className="page">
             <div style={{ maxWidth: "600px", margin: "0 auto" }}>
@@ -195,6 +225,47 @@ export default function ProfilePage() {
 
                     {!isEditing ? (
                         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "8px" }}>
+                                <div style={{
+                                    width: "80px",
+                                    height: "80px",
+                                    borderRadius: "50%",
+                                    overflow: "hidden",
+                                    background: "var(--hover)",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    fontSize: "32px",
+                                    color: "var(--text-light)"
+                                }}>
+                                    {avatarUrl ? (
+                                        <img
+                                            src={avatarUrl}
+                                            alt="Аватар"
+                                            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                                        />
+                                    ) : (
+                                        <span>{profile.accountName?.[0]?.toUpperCase() || "?"}</span>
+                                    )}
+                                </div>
+                                {isOwnProfile && (
+                                    <label style={{
+                                        cursor: uploading ? "default" : "pointer",
+                                        color: "var(--primary)",
+                                        fontWeight: 600,
+                                        fontSize: "14px"
+                                    }}>
+                                        {uploading ? "Загрузка..." : "Сменить аватар"}
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            style={{ display: "none" }}
+                                            onChange={handleAvatarChange}
+                                            disabled={uploading}
+                                        />
+                                    </label>
+                                )}
+                            </div>
                             <div>
                                 <label style={{ display: "block", fontSize: "12px", color: "var(--text-light)", marginBottom: "4px", fontWeight: "600" }}>
                                     Имя аккаунта
