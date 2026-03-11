@@ -1,6 +1,8 @@
 import axios from "axios"
 
-export const API_ORIGIN = "https://localhost:7085"
+// export const API_ORIGIN = "https://localhost:7085"
+
+export const API_ORIGIN = "https://192.168.1.145:7085"
 
 const api = axios.create({
     baseURL: `${API_ORIGIN}/api`,

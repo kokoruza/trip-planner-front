@@ -75,6 +75,190 @@ export default function Sticker({ card, onUpdate, onDelete, isDragging, onDragSt
         : null
 
     if (isEditing) {
+        // Mobile modal for editing
+        const isMobile = window.innerWidth <= 768
+
+        if (isMobile) {
+            return (
+                <>
+                    <div
+                        className={`sticker ${isDragging ? 'dragging' : ''}`}
+                        style={{
+                            position: "absolute",
+                            left: 0,
+                            top: 0,
+                            transform: `translate(${card.positionX}px, ${card.positionY}px)`,
+                            background: card.color || "#fff9c4",
+                            cursor: "grab",
+                            zIndex: 10,
+                            opacity: 0.5,
+                            pointerEvents: "none"
+                        }}
+                    >
+                        <div className="sticker-content">{card.text}</div>
+                    </div>
+
+                    <div
+                        style={{
+                            position: "fixed",
+                            inset: 0,
+                            background: "rgba(0, 0, 0, 0.5)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            zIndex: 2000,
+                            padding: "16px",
+                            touchAction: "none",
+                            overscrollBehavior: "contain"
+                        }}
+                        onClick={handleCancel}
+                    >
+                        <div
+                            style={{
+                                background: editColor,
+                                borderRadius: "12px",
+                                padding: "20px",
+                                maxWidth: "90vw",
+                                width: "100%",
+                                maxHeight: "90vh",
+                                display: "flex",
+                                flexDirection: "column",
+                                boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)"
+                            }}
+                            onClick={e => e.stopPropagation()}
+                        >
+                            <h2 style={{
+                                margin: "0 0 16px 0",
+                                fontSize: "18px",
+                                fontWeight: "700",
+                                color: "var(--text)"
+                            }}>
+                                Редактирование карточки
+                            </h2>
+
+                            <textarea
+                                value={editText}
+                                onChange={e => setEditText(e.target.value)}
+                                style={{
+                                    flex: 1,
+                                    padding: "16px",
+                                    fontSize: "16px",
+                                    fontFamily: "inherit",
+                                    border: "2px solid var(--primary)",
+                                    borderRadius: "8px",
+                                    marginBottom: "16px",
+                                    resize: "none",
+                                    minHeight: "200px"
+                                }}
+                                autoFocus
+                            />
+
+                            {error && (
+                                <div style={{
+                                    padding: "12px",
+                                    background: "#fee2e2",
+                                    border: "1px solid #fca5a5",
+                                    borderRadius: "8px",
+                                    color: "#ef4444",
+                                    fontSize: "13px",
+                                    marginBottom: "16px"
+                                }}>
+                                    {error}
+                                </div>
+                            )}
+
+                            {/* Color Picker */}
+                            <div style={{ marginBottom: "16px" }}>
+                                <div style={{ fontSize: "12px", fontWeight: "600", marginBottom: "8px", color: "var(--text)" }}>
+                                    Выберите цвет:
+                                </div>
+                                <div style={{
+                                    display: "grid",
+                                    gridTemplateColumns: "repeat(5, 1fr)",
+                                    gap: "8px"
+                                }}>
+                                    {PREDEFINED_COLORS.map(color => (
+                                        <button
+                                            key={color}
+                                            style={{
+                                                background: color,
+                                                border: editColor === color ? "4px solid var(--primary)" : "2px solid var(--border)",
+                                                borderRadius: "8px",
+                                                height: "50px",
+                                                cursor: "pointer",
+                                                transition: "all 0.2s"
+                                            }}
+                                            onClick={() => setEditColor(color)}
+                                            title={color}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Buttons */}
+                            <div style={{
+                                display: "grid",
+                                gridTemplateColumns: "1fr 1fr",
+                                gap: "12px"
+                            }}>
+                                <button
+                                    style={{
+                                        padding: "14px",
+                                        fontSize: "16px",
+                                        fontWeight: "600",
+                                        background: "#10b981",
+                                        color: "white",
+                                        border: "none",
+                                        borderRadius: "8px",
+                                        cursor: isSaving ? "not-allowed" : "pointer",
+                                        opacity: isSaving ? 0.6 : 1
+                                    }}
+                                    onClick={handleSave}
+                                    disabled={isSaving}
+                                >
+                                    {isSaving ? "Сохранение..." : "✓ Сохранить"}
+                                </button>
+                                <button
+                                    style={{
+                                        padding: "14px",
+                                        fontSize: "16px",
+                                        fontWeight: "600",
+                                        background: "#ef4444",
+                                        color: "white",
+                                        border: "none",
+                                        borderRadius: "8px",
+                                        cursor: isSaving ? "not-allowed" : "pointer",
+                                        opacity: isSaving ? 0.6 : 1
+                                    }}
+                                    onClick={handleCancel}
+                                    disabled={isSaving}
+                                >
+                                    ✕ Отмена
+                                </button>
+                            </div>
+
+                            <button
+                                style={{
+                                    marginTop: "12px",
+                                    padding: "12px",
+                                    fontSize: "14px",
+                                    fontWeight: "600",
+                                    background: "#fee2e2",
+                                    color: "#dc2626",
+                                    border: "1px solid #fca5a5",
+                                    borderRadius: "8px",
+                                    cursor: "pointer"
+                                }}
+                                onClick={handleDelete}
+                            >
+                                🗑️ Удалить карточку
+                            </button>
+                        </div>
+                    </div>
+                </>
+            )
+        }
+
         return (
             <div
                 className="sticker sticker-editing"
@@ -155,8 +339,13 @@ export default function Sticker({ card, onUpdate, onDelete, isDragging, onDragSt
                 zIndex: isDragging ? 1000 : 10
             }}
             onMouseDown={onDragStart}
+            onTouchStart={onDragStart}
             onDoubleClick={() => setIsEditing(true)}
-            title="Двойной клик для редактирования, перетащите для перемещения"
+            onContextMenu={(e) => {
+                e.preventDefault()
+                setIsEditing(true)
+            }}
+            title="Двойной клик для редактирования, правый клик на мобильных, перетащите для перемещения"
         >
             <div
                 className="sticker-owner-badge"
@@ -185,14 +374,32 @@ export default function Sticker({ card, onUpdate, onDelete, isDragging, onDragSt
                 <button
                     className="sticker-menu-btn sticker-edit"
                     onClick={() => setIsEditing(true)}
-                    title="Редактировать"
+                    onTouchStart={(e) => {
+                        e.preventDefault()
+                        setIsEditing(true)
+                    }}
+                    title="Редактировать (клик или касание)"
+                    style={{
+                        minWidth: "32px",
+                        minHeight: "32px",
+                        fontSize: "16px"
+                    }}
                 >
                     ✎
                 </button>
                 <button
                     className="sticker-menu-btn sticker-delete"
                     onClick={handleDelete}
-                    title="Удалить"
+                    onTouchStart={(e) => {
+                        e.preventDefault()
+                        handleDelete()
+                    }}
+                    title="Удалить (клик или касание)"
+                    style={{
+                        minWidth: "32px",
+                        minHeight: "32px",
+                        fontSize: "16px"
+                    }}
                 >
                     ✕
                 </button>

@@ -9,6 +9,7 @@ import ProfilePage from "../pages/ProfilePage"
 import JoinTripPage from "../pages/JoinTripPage"
 import PollsPage from "../pages/PollsPage"
 import GalleryPage from "../pages/GalleryPage"
+import CalendarPage from "../pages/CalendarPage"
 
 export default function Router() {
 
@@ -26,6 +27,7 @@ export default function Router() {
                 <Route path="/trips/:tripId" element={<TripDetailsPage/>}/>
                 <Route path="/trips/:tripId/polls" element={<PollsPage/>}/>
                 <Route path="/trips/:tripId/gallery" element={<GalleryPage/>}/>
+                <Route path="/trips/:tripId/calendar" element={<CalendarPage/>}/>
                 <Route path="/join/:tripId" element={<JoinTripPage/>}/>
                 <Route path="/boards/:boardId" element={<BoardDetailPage/>}/>
                 <Route path="*" element={<Navigate to="/" />} />

@@ -22,6 +22,10 @@ export default function UserLink({
 
     const handleClick = (e) => {
         if (e) e.stopPropagation()
+        if (!accountId) {
+            console.warn("UserLink: No accountId provided")
+            return
+        }
         navigate(`/profile/${accountId}`)
     }
 

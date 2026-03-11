@@ -319,6 +319,24 @@ export default function TripDetailsPage() {
                     >
                         🖼️ Галерея
                     </Link>
+                    <Link
+                        to={`/trips/${tripId}/calendar`}
+                        className="btn-primary"
+                        style={{
+                            padding: "16px",
+                            textAlign: "center",
+                            textDecoration: "none",
+                            borderRadius: "8px",
+                            fontSize: "16px",
+                            fontWeight: "600",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "8px"
+                        }}
+                    >
+                        📅 Календарь
+                    </Link>
                 </div>
             </div>
         </div>

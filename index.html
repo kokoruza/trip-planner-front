@@ -6,10 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>trip-planner-front</title>
     <script>
-      // Восстанавливаем тему сразу при загрузке (до рендера React)
-      const theme = localStorage.getItem('tp-theme')
-      if (theme === 'dark' || theme === 'light') {
+      // Восстанавливаем тему сразу при загрузке
+      if (document.documentElement) {
+        const theme = localStorage.getItem('tp-theme') || 'light'
         document.documentElement.dataset.theme = theme
+        document.documentElement.style.colorScheme = theme
       }
     </script>
   </head>

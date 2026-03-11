@@ -43,19 +43,35 @@ export default function Canvas({ boardId, cards, onUpdate, onDelete, onCardCreat
         if (e.button === 0 && !isStickerClick) {
             e.preventDefault()
             setIsDraggingCanvas(true)
-            setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y })
+            const clientX = e.clientX || (e.touches && e.touches[0].clientX) || 0
+            const clientY = e.clientY || (e.touches && e.touches[0].clientY) || 0
+            setDragStart({ x: clientX - pan.x, y: clientY - pan.y })
+        }
+    }
+
+    const handleCanvasTouchDown = (e) => {
+        const isStickerClick = e.target.closest('.sticker')
+        if (!isStickerClick && e.touches && e.touches.length === 1) {
+            e.preventDefault()
+            setIsDraggingCanvas(true)
+            const clientX = e.touches[0].clientX
+            const clientY = e.touches[0].clientY
+            setDragStart({ x: clientX - pan.x, y: clientY - pan.y })
         }
     }
 
     const handleMouseMove = (e) => {
         if (isDraggingCanvas && canvasRef.current) {
+            const clientX = e.clientX || (e.touches && e.touches[0].clientX) || 0
+            const clientY = e.clientY || (e.touches && e.touches[0].clientY) || 0
+            
             const canvasWidth = canvasRef.current.clientWidth
             const canvasHeight = canvasRef.current.clientHeight
             const gridWidth = 10000 * zoom
             const gridHeight = 10000 * zoom
 
-            let newPanX = e.clientX - dragStart.x
-            let newPanY = e.clientY - dragStart.y
+            let newPanX = clientX - dragStart.x
+            let newPanY = clientY - dragStart.y
 
             newPanX = Math.min(0, Math.max(newPanX, canvasWidth - gridWidth))
             newPanY = Math.min(0, Math.max(newPanY, canvasHeight - gridHeight))
@@ -68,8 +84,11 @@ export default function Canvas({ boardId, cards, onUpdate, onDelete, onCardCreat
         
         // Обновляем целевую позицию и запускаем smooth animation
         if (dragStateRef.current?.id) {
-            dragStateRef.current.currentScreenX = e.clientX
-            dragStateRef.current.currentScreenY = e.clientY
+            const clientX = e.clientX || (e.touches && e.touches[0].clientX) || 0
+            const clientY = e.clientY || (e.touches && e.touches[0].clientY) || 0
+            
+            dragStateRef.current.currentScreenX = clientX
+            dragStateRef.current.currentScreenY = clientY
             
             // Инициализируем smoothPos если не существует
             if (!smoothPosRef.current) {
@@ -98,8 +117,8 @@ export default function Canvas({ boardId, cards, onUpdate, onDelete, onCardCreat
                     const targetX = dragStateRef.current.cardStartX + worldDeltaX
                     const targetY = dragStateRef.current.cardStartY + worldDeltaY
                     
-                    // Эasing: плавный переход (скорость интерполяции 0.15 = 15% от расстояния за frame)
-                    const easing = 0.15
+                    // Easing: плавный переход (скорость интерполяции 0.35 = 35% от расстояния за frame для быстрого, гладкого движения)
+                    const easing = 0.35
                     smoothPosRef.current.x += (targetX - smoothPosRef.current.x) * easing
                     smoothPosRef.current.y += (targetY - smoothPosRef.current.y) * easing
                     
@@ -198,13 +217,17 @@ export default function Canvas({ boardId, cards, onUpdate, onDelete, onCardCreat
         e.preventDefault()
         e.stopPropagation()
         
+        // Support both mouse and touch events
+        const clientX = e.clientX || (e.touches && e.touches[0].clientX) || 0
+        const clientY = e.clientY || (e.touches && e.touches[0].clientY) || 0
+        
         // Сохраняем состояние в ref для синхронного обновления
         dragStateRef.current = {
             id: card.id,
-            startScreenX: e.clientX,
-            startScreenY: e.clientY,
-            currentScreenX: e.clientX,
-            currentScreenY: e.clientY,
+            startScreenX: clientX,
+            startScreenY: clientY,
+            currentScreenX: clientX,
+            currentScreenY: clientY,
             cardStartX: card.positionX,
             cardStartY: card.positionY
         }
@@ -253,9 +276,19 @@ return (
                 onMouseMove={handleMouseMove}
                 onMouseUp={handleMouseUp}
                 onMouseLeave={handleMouseUp}
-                onTouchStart={handleTouchStart}
-                onTouchMove={handleTouchMove}
-                    onTouchEnd={handleMouseUp}
+                onTouchStart={e => {
+                    handleCanvasTouchDown(e)
+                    handleTouchStart(e)
+                }}
+                onTouchMove={e => {
+                    handleMouseMove(e)
+                    handleTouchMove(e)
+                }}
+                onTouchEnd={handleMouseUp}
+                style={{
+                    touchAction: 'none',
+                    overscrollBehavior: 'contain'
+                }}
             >
                 {/* Zoom Controls */}
                 <div className="zoom-controls-floating">

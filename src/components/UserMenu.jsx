@@ -39,7 +39,11 @@ export default function UserMenu() {
     }
 
     return (
-        <div className="user-menu" ref={menuRef}>
+        <div 
+            className="user-menu" 
+            ref={menuRef}
+            style={{ position: "relative" }}
+        >
             <button
                 type="button"
                 className="user-menu-trigger"
@@ -55,7 +59,16 @@ export default function UserMenu() {
             </button>
 
             {open && (
-                <div className="user-menu-dropdown">
+                <div 
+                    className="user-menu-dropdown"
+                    style={{
+                        position: "absolute",
+                        right: 0,
+                        top: "120%",
+                        maxHeight: "200px",
+                        overflowY: "auto"
+                    }}
+                >
                     <button className="user-menu-item" onClick={handleProfile}>
                         👤 Профиль
                     </button>
