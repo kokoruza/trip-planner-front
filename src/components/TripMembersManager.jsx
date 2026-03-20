@@ -2,7 +2,7 @@ import { useState, useContext, useEffect } from "react"
 import { getTripMembers, removeTripMember } from "../api/tripApi"
 import { getAccount } from "../api/accountsApi"
 import { AuthContext } from "../auth/AuthContext"
-import { API_ORIGIN } from "../api/axios"
+import { getMediaUrl } from "../api/axios"
 import UserLink from "./UserLink"
 
 export default function TripMembersManager({ trip, onMembersUpdate }) {

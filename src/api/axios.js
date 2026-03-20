@@ -1,11 +1,18 @@
 import axios from "axios"
 
-// export const API_ORIGIN = "https://localhost:7085"
+export const API_ORIGIN = "/api"
+export const MEDIA_BASE = "" // Пустая строка = текущий хост
 
-export const API_ORIGIN = "https://192.168.1.145:7085"
+// Функция для получения URL медиа файлов (аватары, галерея)
+export const getMediaUrl = (path) => {
+    if (!path) return null
+    if (path.startsWith('http')) return path
+    // Путь вида "/avatars/..." или "/uploads/..." идёт прямо без /api префикса
+    return `${MEDIA_BASE}${path}`
+}
 
 const api = axios.create({
-    baseURL: `${API_ORIGIN}/api`,
+    baseURL: API_ORIGIN,
     withCredentials: true
 })
 
@@ -33,7 +40,7 @@ api.interceptors.response.use(
             const refresh = localStorage.getItem("refreshToken")
 
             const response = await axios.post(
-                `${API_ORIGIN}/api/auth/refresh`,
+                `/api/auth/refresh`,
                 { refreshToken: refresh }
             )
 

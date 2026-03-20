@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { AuthContext } from "../auth/AuthContext"
 import { getAccount, updateAccount, deleteAccount, uploadAvatar } from "../api/accountsApi"
-import { API_ORIGIN } from "../api/axios"
+import { getMediaUrl } from "../api/axios"
 import UserMenu from "../components/UserMenu"
 import ThemeToggle from "../components/ThemeToggle"
 
@@ -170,9 +170,7 @@ export default function ProfilePage() {
         )
     }
 
-    const avatarUrl = profile.avatarPath
-        ? `${API_ORIGIN}${profile.avatarPath}`
-        : null
+    const avatarUrl = getMediaUrl(profile.avatarPath)
 
     return (
         <div className="page">

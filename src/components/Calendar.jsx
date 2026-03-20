@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { API_ORIGIN } from "../api/axios"
+import { getMediaUrl } from "../api/axios"
 
 export default function Calendar({ events = [], vacationSchedules = [], onDaySelect }) {
     const [currentDate, setCurrentDate] = useState(new Date())
@@ -70,9 +70,7 @@ export default function Calendar({ events = [], vacationSchedules = [], onDaySel
     }
 
     const getAvatarUrl = (avatarPath) => {
-        if (!avatarPath) return null
-        if (avatarPath.startsWith('http')) return avatarPath
-        return `${API_ORIGIN}${avatarPath}`
+        return getMediaUrl(avatarPath)
     }
 
     const days = getCurrentMonthDays()

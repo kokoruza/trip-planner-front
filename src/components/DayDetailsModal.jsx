@@ -11,33 +11,15 @@ const formatDate = (date) => {
     return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}`
 }
 
-import { API_ORIGIN } from "../api/axios"
+import { getMediaUrl } from "../api/axios"
 
-const getAvatarUrl = (avatarPath) => {
-    if (!avatarPath) return null
-    if (avatarPath.startsWith('http')) return avatarPath
-    return `${API_ORIGIN}${avatarPath}`
-}
+const getAvatarUrl = (avatarPath) => getMediaUrl(avatarPath)
 
 const getImageUrl = (event) => {
     if (!event) return null
-    // API returns imageUrl as a relative path like "/gallery/..."
-    // Similar to how avatars work, need to prepend API_ORIGIN
-    if (event.imageUrl) {
-        return event.imageUrl.startsWith('http') 
-            ? event.imageUrl 
-            : `${API_ORIGIN}${event.imageUrl}`
-    }
-    if (event.imagePath) {
-        return event.imagePath.startsWith('http')
-            ? event.imagePath
-            : `${API_ORIGIN}${event.imagePath}`
-    }
-    if (event.photoPath) {
-        return event.photoPath.startsWith('http')
-            ? event.photoPath
-            : `${API_ORIGIN}${event.photoPath}`
-    }
+    if (event.imageUrl) return getMediaUrl(event.imageUrl)
+    if (event.imagePath) return getMediaUrl(event.imagePath)
+    if (event.photoPath) return getMediaUrl(event.photoPath)
     return null
 }
 

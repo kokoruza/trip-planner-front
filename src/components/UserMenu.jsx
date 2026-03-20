@@ -1,7 +1,7 @@
 import { useContext, useState, useRef, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { AuthContext } from "../auth/AuthContext"
-import { API_ORIGIN } from "../api/axios"
+import { getMediaUrl } from "../api/axios"
 
 export default function UserMenu() {
     const { user, logout } = useContext(AuthContext)
@@ -24,7 +24,7 @@ export default function UserMenu() {
 
     if (!user) return null
 
-    const avatarUrl = user.avatarPath ? `${API_ORIGIN}${user.avatarPath}` : null
+    const avatarUrl = getMediaUrl(user.avatarPath)
     const initial = (user.accountName || "?").charAt(0).toUpperCase()
 
     const handleProfile = () => {

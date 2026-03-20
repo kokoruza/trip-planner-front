@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { updateCard, deleteCard } from "../api/boardApi"
-import { API_ORIGIN } from "../api/axios"
+import { getMediaUrl } from "../api/axios"
 
 const PREDEFINED_COLORS = [
     "#fff9c4", // Yellow
@@ -70,9 +70,7 @@ export default function Sticker({ card, onUpdate, onDelete, isDragging, onDragSt
         setError("")
     }
 
-    const ownerAvatarUrl = card.ownerAvatarPath
-        ? `${API_ORIGIN}${card.ownerAvatarPath}`
-        : null
+    const ownerAvatarUrl = getMediaUrl(card.ownerAvatarPath)
 
     if (isEditing) {
         // Mobile modal for editing

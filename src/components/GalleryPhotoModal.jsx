@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from "react"
 import { AuthContext } from "../auth/AuthContext"
 import { likePhoto, unlikePhoto, addComment, deleteComment } from "../api/galleryApi"
-import { API_ORIGIN } from "../api/axios"
+import { getMediaUrl } from "../api/axios"
 import UserLink from "./UserLink"
 
 export default function GalleryPhotoModal({ photo, onClose, onPhotoUpdated }) {
@@ -131,7 +131,7 @@ export default function GalleryPhotoModal({ photo, onClose, onPhotoUpdated }) {
                         width: isMobile ? "100%" : "auto"
                     }}>
                     <img
-                        src={`${API_ORIGIN}${photo.imagePath}`}
+                        src={getMediaUrl(photo.imagePath)}
                         alt={photo.title}
                         style={{
                             maxWidth: "100%",

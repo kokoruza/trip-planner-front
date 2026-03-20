@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom"
-import { API_ORIGIN } from "../api/axios"
+import { getMediaUrl } from "../api/axios"
 
 export default function UserLink({ 
     accountId, 
@@ -61,7 +61,7 @@ export default function UserLink({
             }}>
                 {avatar ? (
                     <img 
-                        src={`${API_ORIGIN}${avatar}`} 
+                        src={getMediaUrl(avatar)}
                         alt="" 
                         style={{ width: "100%", height: "100%", objectFit: "cover" }} 
                     />

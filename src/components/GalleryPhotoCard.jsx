@@ -1,7 +1,7 @@
 import { useContext } from "react"
 import { AuthContext } from "../auth/AuthContext"
 import { deleteGalleryPhoto, likePhoto, unlikePhoto } from "../api/galleryApi"
-import { API_ORIGIN } from "../api/axios"
+import { getMediaUrl } from "../api/axios"
 import UserLink from "./UserLink"
 
 export default function GalleryPhotoCard({ photo, onPhotoUpdated, onPhotoDeleted, onPhotoClick }) {
@@ -68,7 +68,7 @@ export default function GalleryPhotoCard({ photo, onPhotoUpdated, onPhotoDeleted
                 overflow: "hidden"
             }}>
                 <img
-                    src={`${API_ORIGIN}${photo.imagePath}`}
+                    src={getMediaUrl(photo.imagePath)}
                     alt={photo.title}
                     style={{
                         position: "absolute",

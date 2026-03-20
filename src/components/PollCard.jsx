@@ -1,7 +1,7 @@
 import { useState, useContext } from "react"
 import { AuthContext } from "../auth/AuthContext"
 import { votePoll, deletePoll } from "../api/pollApi"
-import { API_ORIGIN } from "../api/axios"
+import { getMediaUrl } from "../api/axios"
 
 export default function PollCard({ poll, onPollUpdated, onPollDeleted }) {
     const { user } = useContext(AuthContext)
@@ -87,7 +87,7 @@ export default function PollCard({ poll, onPollUpdated, onPollDeleted }) {
                             fontWeight: "600"
                         }}>
                             {poll.createdByAvatar ? (
-                                <img src={`${API_ORIGIN}${poll.createdByAvatar}`} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                                <img src={getMediaUrl(poll.createdByAvatar)} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                             ) : (
                                 <span>{poll.createdByName?.[0]?.toUpperCase() || "?"}</span>
                             )}
@@ -138,7 +138,7 @@ export default function PollCard({ poll, onPollUpdated, onPollDeleted }) {
                                 }}
                             >
                                 <img
-                                    src={`${API_ORIGIN}${img.imagePath}`}
+                                    src={getMediaUrl(img.imagePath)}
                                     alt={img.caption || "Poll image"}
                                     style={{ width: "100%", height: "120px", objectFit: "cover" }}
                                 />
