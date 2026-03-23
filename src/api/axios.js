@@ -1,5 +1,7 @@
 import axios from "axios"
 
+// Для dev: используется /api (proxy в vite.config.js)
+// Для prod: используется переменная окружения или /api
 export const API_ORIGIN = "/api"
 export const MEDIA_BASE = "" // Пустая строка = текущий хост
 
